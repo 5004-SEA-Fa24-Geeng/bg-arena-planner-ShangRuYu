@@ -12,13 +12,340 @@ Place your class diagrams below. Make sure you check the file in the browser on 
 
 Provide a class diagram for the provided code as you read through it.  For the classes you are adding, you will create them as a separate diagram, so for now, you can just point towards the interfaces for the provided code diagram.
 
+```mermaid
+classDiagram
+    BGArenaPlanner --> ConsoleApp
+    BGArenaPlanner --> GameList
+    BGArenaPlanner --> Planner
+    BGArenaPlanner --> GameLoader : uses
+    
+    GameList ..|> IGameList : is-a
+    GameList o--BoardGame : has-many
+    
+    Planner ..|> IPlanner : is-a
+    Planner *-- BoardGame : has-many
+    Planner --> GameData : uses
+    Planner --> Operations : uses
+    
+    ConsoleApp *-- IPlanner : has-a
+    GameLoader --> BoardGame
+    GameLoader --> GameData : uses
+    
+    class IGameList{
+        <<interface>>
+        +ADD_ALL: String
+        +getGameNames() List~String~
+        +clear() void
+        +count() int
+        +saveGame(filename: String) void
+        +addToList(str: String, filtered: Stream~BoardGame~) void
+        +removeFromList(str: String) void
+    }
+    
+    class IPlanner{
+        <<interface>>
+        +filter(filter: String) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData, ascending: boolean) Stream~BoardGame~
+        +reset() void
+    }
+    
+    class BGArenaPlanner{
+        -DEFAULT_COLLECTION: String
+        -BGArenaPlanner()
+        +main(String[] args): void
+    }
 
+    class BoardGame{
+        -name: String
+        -id: int
+        -minPlayers: int
+        -maxPlayers: int
+        -maxPlayTime: int
+        -minPlayTime: int
+        -difficulty: duoble
+        -rank: int
+        -averageRating: double
+        -yearPublished: int
+        +BoardGame(name, id, minPlayers, maxPlayers, minPlayTime, maxPlayTime, difficulty, rank, averageRating, yearPublished)
+        +getName() String
+        +getId() int
+        +getMinPlayers() int
+        +getMaxPlayers() int
+        +getMaxPlayTime() int
+        +getMinPlayTime() int
+        +getDifficulty() double
+        +getRank() int
+        +getRating() double
+        +getYearPublished() int
+        +toStringWithInfo(GameData col) String
+        +toString() String
+        +equals(Object obj) boolean
+        +hashCode() int
+    }
+    
+    class ConsoleApp{
+        -IN: Scanner
+        -DEFAULT_FILENAME: String
+        -RND: Random
+        -current: Scanner
+        -gameList: IGameList
+        -planner: IPlanner
+        +ConsoleApp(gameList: IGameList, planner: IPlanner)
+        +start() void
+        -randomNumber() void
+        -processHelp() void
+        -processFilter() void
+        -printFilterStream(games: Stream~BoardGame~ , sortON: GameData) void
+        -processListCommands() void
+        -printCurrentList() void
+        -nextCommand() ConsoleText
+        -remainder() String
+    }
+    
+    class GameData{
+        <<enumeration>>
+        NAME
+        ID
+        RATING
+        DIFFICULTY
+        RANK
+        MIN_PLAYERS
+        MAX_PLAYERS
+        MIN_TIME
+        MAX_TIME
+        YEAR
+        -columnName String
+        +getColumnName() String
+        +fromColumnName(columnName: String) GameData
+        +fromString(name: String) GameData
+    }
+    
+    class GameList{
+        +GameList()
+        +getGameNames() List~String~
+        +clear() void
+        +count() int
+        +saveGame(filename: String) void
+        +addToList(str: String, filtered: Stream~BoardGame~) void
+        +removeFromList(str: String) void
+    }
+    
+    
+    
+    class GameLoader{
+        -DELIMITER String
+        -GamesLoader()
+        +loadGamesFile(filename: String) Set~BoardGame~
+        -toBoardGame(line: String, columnMap: Map) BoardGame
+        -processHeader(header: String) Map
+    }
+    
+    class Operations{
+        <<enumeration>>
+        EQUALS
+        NOT_EQUALS
+        GREATER_THAN
+        LESS_THAN
+        GREATER_THAN_EQUALS
+        LESS_THAN_EQUALS
+        CONTAINS
+        -operator String
+        +getOperator() String
+        +fromOperator(operator: String) Operations
+        +getOperatorFromStr(str: String) Operations
+    }
+    
+    class Planner{
+        +Planner(games: Set~BoardGame~)
+        +filter(filter: String) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData, ascending: boolean) Stream~BoardGame~
+        +reset() void
+
+    }
+
+```
 
 ### Your Plans/Design
 
 Create a class diagram for the classes you plan to create. This is your initial design, and it is okay if it changes. Your starting points are the interfaces. 
 
+```mermaid
+classDiagram
+    BGArenaPlanner --> ConsoleApp
+    BGArenaPlanner --> GameList
+    BGArenaPlanner --> Planner
+    BGArenaPlanner --> GameLoader : uses
 
+    GameList ..|> IGameList : is-a
+    GameList o--BoardGame : has-many
+
+    Planner ..|> IPlanner : is-a
+    Planner *-- BoardGame : has-many
+    Planner --> GameData : uses
+    Planner --> Operations : uses
+
+    ConsoleApp *-- IPlanner : has-a
+    GameLoader --> BoardGame
+    GameLoader --> GameData : uses
+
+    PlayerCountFilter --|> AbstractFilter : is-a
+    DifficultyFilter --|> AbstractFilter : is-a
+    Planner *-- AbstractFilter : has-many
+    AbstractFilter ..> BoardGame
+
+    class IGameList {
+        <<interface>>
+        +ADD_ALL: String
+        +getGameNames() List~String~
+        +clear() void
+        +count() int
+        +saveGame(filename: String) void
+        +addToList(str: String, filtered: Stream~BoardGame~) void
+        +removeFromList(str: String) void
+    }
+    class IPlanner {
+        <<interface>>
+        +filter(filter: String) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData, ascending: boolean) Stream~BoardGame~
+        +reset() void
+    }
+    
+    class AbstractFilter {
+        <<abstract>>
+        #value: String
+        #nextFilter: AbstractFilter
+        +setNextFilter(filter: AbstractFilter)
+        +abstract apply(games: Stream~BoardGame~) Stream~BoardGame~
+    }
+
+    class PlayerCountFilter {
+        -minPlayers: int
+        -maxPlayers: int
+        +apply(games: Stream~BoardGame~) Stream~BoardGame~
+    }
+
+    class DifficultyFilter {
+        -minDifficulty: double
+        -maxDifficulty: double
+        +apply(games: Stream~BoardGame~) Stream~BoardGame~
+    }
+
+    class Planner {
+        -filters: List~AbstractFilter~
+        -games: Set~BoardGame~
+        +filter() Stream~BoardGame~
+        +reset() void
+    }
+
+    class BGArenaPlanner{
+        -DEFAULT_COLLECTION: String
+        -BGArenaPlanner()
+        +main(String[] args): void
+    }
+
+    class BoardGame{
+        -name: String
+        -id: int
+        -minPlayers: int
+        -maxPlayers: int
+        -maxPlayTime: int
+        -minPlayTime: int
+        -difficulty: duoble
+        -rank: int
+        -averageRating: double
+        -yearPublished: int
+        +BoardGame(name, id, minPlayers, maxPlayers, minPlayTime, maxPlayTime, difficulty, rank, averageRating, yearPublished)
+        +getName() String
+        +getId() int
+        +getMinPlayers() int
+        +getMaxPlayers() int
+        +getMaxPlayTime() int
+        +getMinPlayTime() int
+        +getDifficulty() double
+        +getRank() int
+        +getRating() double
+        +getYearPublished() int
+        +toStringWithInfo(GameData col) String
+        +toString() String
+        +equals(Object obj) boolean
+        +hashCode() int
+    }
+
+    class ConsoleApp{
+        -IN: Scanner
+        -DEFAULT_FILENAME: String
+        -RND: Random
+        -current: Scanner
+        -gameList: IGameList
+        -planner: IPlanner
+        +ConsoleApp(gameList: IGameList, planner: IPlanner)
+        +start() void
+        -randomNumber() void
+        -processHelp() void
+        -processFilter() void
+        -printFilterStream(games: Stream~BoardGame~ , sortON: GameData) void
+        -processListCommands() void
+        -printCurrentList() void
+        -nextCommand() ConsoleText
+        -remainder() String
+    }
+
+    class GameData{
+        <<enumeration>>
+        NAME
+        ID
+        RATING
+        DIFFICULTY
+        RANK
+        MIN_PLAYERS
+        MAX_PLAYERS
+        MIN_TIME
+        MAX_TIME
+        YEAR
+        -columnName String
+        +getColumnName() String
+        +fromColumnName(columnName: String) GameData
+        +fromString(name: String) GameData
+    }
+
+    class GameList{
+        +GameList()
+        +getGameNames() List~String~
+        +clear() void
+        +count() int
+        +saveGame(filename: String) void
+        +addToList(str: String, filtered: Stream~BoardGame~) void
+        +removeFromList(str: String) void
+    }
+
+
+
+    class GameLoader{
+        -DELIMITER String
+        -GamesLoader()
+        +loadGamesFile(filename: String) Set~BoardGame~
+        -toBoardGame(line: String, columnMap: Map) BoardGame
+        -processHeader(header: String) Map
+    }
+
+    class Operations{
+        <<enumeration>>
+        EQUALS
+        NOT_EQUALS
+        GREATER_THAN
+        LESS_THAN
+        GREATER_THAN_EQUALS
+        LESS_THAN_EQUALS
+        CONTAINS
+        -operator String
+        +getOperator() String
+        +fromOperator(operator: String) Operations
+        +getOperatorFromStr(str: String) Operations
+    }
+```
 
 
 
@@ -36,10 +363,14 @@ Write a test (in english) that you can picture for the class diagram you have cr
 
 You should feel free to number your brainstorm. 
 
-1. Test 1..
-2. Test 2..
-
-
+1. Create a BoardGame object, testing getters return correct value.
+2. Compare two BoardGame object with same name and ID, both will be tested as equal.
+3. Create a BoardGame object, testing with edge cases.
+4. Add a game into list, test the count and getGameName.
+5. Add a duplicate game, test the return count value.
+6. Remove a game, test teh return value.
+7. Test minPlayer with random number, should return proper games.
+8. Test invalid syntax
 
 
 ## (FINAL DESIGN): Class Diagram
