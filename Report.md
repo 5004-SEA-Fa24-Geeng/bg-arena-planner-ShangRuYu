@@ -7,16 +7,25 @@ code as it is meant to help you understand some of the concepts.
 
 1. What is the difference between == and .equals in java? Provide a code example of each, where they would return different results for an object. Include the code snippet using the hash marks (```) to create a code block.
    ```java
-   // your code here
+   String str1 = new String("hello");
+   String str2 = new String("hello");
+   
+   System.out.println(str1 == str2); //true
+   System.out.println(str1.equals(str2)); //false
+   
+   public boolean equals(Object obj) {
+        if (this == obj) return true; // check reference
+        if (obj == null || getClass() != obj.getClass()) return false;
+      }
+   }
    
    ```
-
-
+   `==` checks whether two obejects point to the same object in memory. `.equals()` check whether two objects are logically equal. Without overriding `equals()`, the default `equals()` method is the same as `==`
 
 
 2. Logical sorting can be difficult when talking about case. For example, should "apple" come before "Banana" or after? How would you sort a list of strings in a case-insensitive manner? 
 
-
+   We can converts each string into lowercase before comparing.
 
 
 
@@ -35,19 +44,21 @@ code as it is meant to help you understand some of the concepts.
     ```
     Why would the order in which we checked matter (if it does matter)? Provide examples either way proving your point. 
 
-
+   The checking order matters because if we check for `>` before `>=`, then any string containing `>=` will be misinterpreted as just `>`.
 
 4. What is the difference between a List and a Set in Java? When would you use one over the other? 
 
-
+   Use `List` when we need duplicate elements and indexed access. Use `Set` when unique is required.
 
 
 5. In [GamesLoader.java](src/main/java/student/GamesLoader.java), we use a Map to help figure out the columns. What is a map? Why would we use a Map here? 
 
-
+   Map allows storing and retrieving values based on key.
 
 
 6. [GameData.java](src/main/java/student/GameData.java) is actually an `enum` with special properties we added to help with column name mappings. What is an `enum` in Java? Why would we use it for this application?
+
+   `enum` defines a fixed set of constant values. It is used when a variable has already been defined in fixed set. We use enum for operations. Defines filtering operations like `>=` `<=` `==`.
 
 
 
@@ -69,8 +80,14 @@ code as it is meant to help you understand some of the concepts.
     ``` 
 
     ```java
-    // your code here, don't forget the class name that is dropped in the switch block..
-    
+    if (ct == ConsoleText.CMD_QUESTION || ct == ConsoleText.CMD_HELP) {
+        processHelp();
+    } else if (ct == ConsoleText.INVALID) {
+        CONSOLE.printf("%s%n", ConsoleText.INVALID);
+    } else {
+        CONSOLE.printf("%s%n", ConsoleText.INVALID);
+    }
+
     ```
 
 ## Deeper Thinking
@@ -87,7 +104,10 @@ the current layout.
 Post a copy of the run with the updated languages below this. Use three back ticks (```) to create a code block. 
 
 ```text
-// your consoles output here
+*******歡迎來到桌遊規劃工具！*******
+
+這是一款工具，幫助您計劃在 Board Game Arena 上想要玩的遊戲。
+請在下方輸入您的第一個指令，或輸入 ? 或 help 來查看可用指令。
 ```
 
 Now, thinking about localization - we have the question of why does it matter? The obvious
@@ -98,3 +118,11 @@ various spoken languages around the world? What about areas with internet access
 
 
 As a reminder, deeper thinking questions are meant to require some research and to be answered in a paragraph for with references. The goal is to open up some of the discussion topics in CS, so you are better informed going into industry. 
+
+The purpose of localization is to expand the market, enabling users from different backgrounds to understand and use the software. By enhancing user experience with displaying content in the user’s native language,  localization promotes accessibility, ensuring that content is culturally appropriate for different user groups.Companies that offer multilingual support can strengthen brand image, demonstrating competitiveness and increasing revenue in international markets[^1].
+
+For instance, Weee!, a well-known North American e-commerce platform. Targeting Asian customers for groceries shopping. Since its majority customers are Asian, Weee! provides Chinese, Korean, and Japanese language support to attract diverse users. However, if Weee! fails to accurately translate product names or promotional messages, users may become confused, reducing their willingness to purchase.  If localization is not handled properly, some user groups may feel overlooked, impacting customer loyalty[^2].
+
+[^1]Al-Tarawneh, A. (2024). Translating User Experience: Localization Strategies for E-Commerce Websites. In Frontiers of Human Centricity in the Artificial Intelligence-Driven Society 5.0 (pp. 1125-1134). Springer, Cham.
+
+[^2]Marcus, A., & Gould, E. W. (2012). Globalization, localization, and cross-cultural user-interface design. The human-computer interaction handbook: Fundamentals, evolving technologies, and emerging applications, 341-366.
