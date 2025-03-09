@@ -101,7 +101,7 @@ public class Planner implements IPlanner {
 
         Stream<BoardGame> sortedStream = stream.sorted((g1, g2) -> {
             int comparison;
-            switch (sortOn){
+            switch (sortOn) {
                 case RATING:
                     comparison = Double.compare(g1.getRating(), g2.getRating());
                     break;

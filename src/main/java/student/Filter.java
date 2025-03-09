@@ -1,10 +1,10 @@
 package student;
 
 /**
- * The Filter class provides methods to apply filtering logic to board games based on different attributes and operations.
+ * The Filter class provides methods to apply filtering logic.
  */
 public final class Filter {
-    private Filter () { }
+    private Filter() { }
 
     /**
      * Filter games based on a specific attribute, operation, and value.

@@ -86,7 +86,9 @@ public class GameList implements IGameList {
         if (str.equalsIgnoreCase(ADD_ALL)) {
             Set<BoardGame> uniqueGames = new LinkedHashSet<>(filteredList);
             for (BoardGame game : uniqueGames) {
-                games.add(game);
+                if (!games.contains(game)) {
+                    games.add(game);
+                }
             }
         } else if (str.matches("\\d+-\\d+")) {
             String[] range = str.split("-");
@@ -97,7 +99,9 @@ public class GameList implements IGameList {
             }
             for (int i = start; i <= end; i++) {
                 BoardGame gameToAdd = filteredList.get(i);
-                games.add(gameToAdd);
+                if (!games.contains(gameToAdd)) {
+                    games.add(gameToAdd);
+                }
             }
         } else {
             try {
@@ -106,7 +110,9 @@ public class GameList implements IGameList {
                     throw new IllegalArgumentException("Invalid Index");
                 }
                 BoardGame gameToAdd = filteredList.get(index);
-                games.add(gameToAdd);
+                if (!games.contains(gameToAdd)) {
+                    games.add(gameToAdd);
+                }
             } catch (NumberFormatException e) {
                 filteredList.stream()
                         .filter(game -> game.getName().equalsIgnoreCase(str))
