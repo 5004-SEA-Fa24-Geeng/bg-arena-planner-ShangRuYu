@@ -12,6 +12,9 @@ import java.util.stream.Stream;
  * retrieval, and saving of game lists.
  */
 public class GameList implements IGameList {
+    /**
+     * The list that stores all board games added to this GameList.
+     */
     private final List<BoardGame> games;
     /**
      * Constructor for the GameList.
@@ -58,12 +61,12 @@ public class GameList implements IGameList {
      */
     @Override
     public void saveGame(String filename) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))){
-            for (String name : getGameNames()){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (String name : getGameNames()) {
                 writer.write(name);
                 writer.newLine();
             }
-        } catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException("Error saving game list", e);
         }
     }
@@ -80,31 +83,31 @@ public class GameList implements IGameList {
     public void addToList(String str, Stream<BoardGame> filtered) throws IllegalArgumentException {
         List<BoardGame> filteredList = filtered.collect(Collectors.toList());
 
-        if (str.equalsIgnoreCase(ADD_ALL)){
+        if (str.equalsIgnoreCase(ADD_ALL)) {
             Set<BoardGame> uniqueGames = new LinkedHashSet<>(filteredList);
             for (BoardGame game : uniqueGames) {
                 games.add(game);
             }
-        } else if (str.matches("\\d+-\\d+")){
+        } else if (str.matches("\\d+-\\d+")) {
             String[] range = str.split("-");
             int start = Integer.parseInt(range[0]) - 1;
             int end = Integer.parseInt(range[1]) - 1;
-            if (start < 0 || end >= filteredList.size() || start > end){
+            if (start < 0 || end >= filteredList.size() || start > end) {
                 throw new IllegalArgumentException("Invalid range");
             }
-            for (int i = start; i <= end; i++){
+            for (int i = start; i <= end; i++) {
                 BoardGame gameToAdd = filteredList.get(i);
                 games.add(gameToAdd);
             }
-        } else{
-            try{
+        } else {
+            try {
                 int index = Integer.parseInt(str) - 1;
-                if (index < 0 || index >= filteredList.size()){
+                if (index < 0 || index >= filteredList.size()) {
                     throw new IllegalArgumentException("Invalid Index");
                 }
                 BoardGame gameToAdd = filteredList.get(index);
                 games.add(gameToAdd);
-            } catch (NumberFormatException e){
+            } catch (NumberFormatException e) {
                 filteredList.stream()
                         .filter(game -> game.getName().equalsIgnoreCase(str))
                         .findFirst()
@@ -124,20 +127,20 @@ public class GameList implements IGameList {
      */
     @Override
     public void removeFromList(String str) throws IllegalArgumentException {
-        if (str.equalsIgnoreCase(ADD_ALL)){
+        if (str.equalsIgnoreCase(ADD_ALL)) {
             clear();
             return;
         }
-        try{
+        try {
             List<String> sortedGameNames = getGameNames();
             int index = Integer.parseInt(str) - 1;
-            if (index < 0 || index >= sortedGameNames.size()){
+            if (index < 0 || index >= sortedGameNames.size()) {
                 throw new IllegalArgumentException("Invalid index");
             }
             String gameToRemove = sortedGameNames.get(index);
             games.removeIf(game -> game.getName().equalsIgnoreCase(gameToRemove));
-        } catch (NumberFormatException e){
-            if (!games.removeIf(game -> game.getName().equalsIgnoreCase(str))){
+        } catch (NumberFormatException e) {
+            if (!games.removeIf(game -> game.getName().equalsIgnoreCase(str))) {
                 throw new IllegalArgumentException("Game not found");
             }
         }

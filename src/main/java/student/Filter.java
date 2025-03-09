@@ -1,18 +1,13 @@
 package student;
 
-import student.BoardGame;
-import student.GameData;
-import student.Operations;
-
 /**
- * The Filter class provides methods to apply filtering logic
- * to board games based on different attributes and operations
+ * The Filter class provides methods to apply filtering logic to board games based on different attributes and operations.
  */
-public class Filter {
-    private Filter() {}
+public final class Filter {
+    private Filter () { }
 
     /**
-     * Filter games based on a specific attribute, operation, and value
+     * Filter games based on a specific attribute, operation, and value.
      * @param game The game to be filtered
      * @param column The attribute of the game to filter by
      * @param op The operation to apply fot filtering
@@ -46,7 +41,7 @@ public class Filter {
     }
 
     /**
-     * Filters a string attribute based on a given operation
+     * Filters a string attribute based on a given operation.
      *
      * @param gameData The string data to filter
      * @param op       The operation to apply
@@ -68,7 +63,7 @@ public class Filter {
     }
 
     /**
-     * Filters a numeric attribute based on a given operation
+     * Filters a numeric attribute based on a given operation.
      *
      * @param gameData The numeric data to filter
      * @param op       The operation to apply

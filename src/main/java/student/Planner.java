@@ -7,16 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The planner class use for filtering and sorting board games
- * Includes criteria such as rating, difficulty, and players
+ * The planner class use for filtering and sorting board games.
+ * Includes criteria such as rating, difficulty, and players.
  */
 public class Planner implements IPlanner {
+    /**
+     * The complete set of all board games available to the planner.
+     */
     private final Set<BoardGame> allGames;
+
+    /**
+     * The current set of board games after applying filters.
+     */
     private Set<BoardGame> filteredGames;
+
+    /**
+     * The most recent list of filtered board games, stored for quick access.
+     */
     private List<BoardGame> lastFilteredList;
 
     /**
-     * Constructors for the planner with set of board games
+     * Constructors for the planner with set of board games.
      * @param games The set of board games
      */
     public Planner(Set<BoardGame> games) {
@@ -26,7 +37,7 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Filter the game based on provided filter strings
+     * Filter the game based on provided filter strings.
      * @param filter The filter to apply to the board games
      * @return A stream of filtered games
      */
@@ -36,7 +47,7 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Filter and sort games based on provided criteria
+     * Filter and sort games based on provided criteria.
      * @param filter The filter to apply to the board games.
      * @param sortOn The column to sort the results on.
      * @return A stream of filtered and sorted games
@@ -47,7 +58,7 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Filter and sort games based on provided criteria and sorting order
+     * Filter and sort games based on provided criteria and sorting order.
      * @param filter The filter to apply to the board games.
      * @param sortOn The column to sort the results on.
      * @param ascending Whether to sort the results in ascending order or descending order.
@@ -59,7 +70,7 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Reset the list
+     * Reset the list.
      */
     @Override
     public void reset() {
@@ -68,20 +79,22 @@ public class Planner implements IPlanner {
     }
 
     /**
-     * Applies sorting and filtering on board games
+     * Applies sorting and filtering on board games.
      * @param filter The filter to apply to the board games.
      * @param sortOn The column to sort the results on.
      * @param ascending Whether to sort the results in ascending order or descending order.
      * @return A stream of filtered and sorted games
      */
-    private Stream<BoardGame> applyFilter(String filter, GameData sortOn, boolean ascending){
+    private Stream<BoardGame> applyFilter(String filter, GameData sortOn, boolean ascending) {
         Stream<BoardGame> stream = filteredGames.stream();
 
-        if (!filter.isEmpty()){
+        if (!filter.isEmpty()) {
             String[] conditions = filter.split(",");
-            for (String condition : conditions){
-                stream = stream.filter(game -> Filter.filter(game, GameData.fromString(condition.split(Operations.getOperatorFromStr(condition)
-                        .getOperator())[0].trim()), Operations.getOperatorFromStr(condition), condition.split(Operations.getOperatorFromStr(condition)
+            for (String condition : conditions) {
+                stream = stream.filter(game -> Filter
+                        .filter(game, GameData.fromString(condition.split(Operations.getOperatorFromStr(condition)
+                        .getOperator())[0].trim()), Operations.getOperatorFromStr(condition),
+                                condition.split(Operations.getOperatorFromStr(condition)
                         .getOperator())[1].trim()));
             }
         }
