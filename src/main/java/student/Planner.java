@@ -122,12 +122,4 @@ public class Planner implements IPlanner {
         return this.lastFilteredList.stream();
     }
 
-    /**
-     * Retrieves the last filtered list of board games.
-     *
-     * @return A list of board games that were last filtered.
-     */
-    public List<BoardGame> getLastFilteredList(){
-        return this.lastFilteredList;
-    }
 }

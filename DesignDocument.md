@@ -382,7 +382,167 @@ For the final design, you just need to do a single diagram that includes both th
 > [!WARNING]
 > If you resubmit your assignment for manual grading, this is a section that often needs updating. You should double check with every resubmit to make sure it is up to date.
 
+```mermaid
+classDiagram
+    BGArenaPlanner --> ConsoleApp
+    BGArenaPlanner --> GameList
+    BGArenaPlanner --> Planner
+    BGArenaPlanner --> GameLoader : uses
+    
+    GameList ..|> IGameList : is-a
+    GameList o--BoardGame : has-many
+    
+    Planner ..|> IPlanner : is-a
+    Planner *-- BoardGame : has-many
+    Planner --> GameData : uses
+    Planner --> Operations : uses
+    Planner --> Filter : uses
+    
+    ConsoleApp *-- IPlanner : has-a
+    GameLoader --> BoardGame
+    GameLoader --> GameData : uses
+    
+    class IGameList{
+        <<interface>>
+        +ADD_ALL: String
+        +getGameNames() List~String~
+        +clear() void
+        +count() int
+        +saveGame(filename: String) void
+        +addToList(str: String, filtered: Stream~BoardGame~) void
+        +removeFromList(str: String) void
+    }
+    
+    class IPlanner{
+        <<interface>>
+        +filter(filter: String) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData, ascending: boolean) Stream~BoardGame~
+        +reset() void
+    }
+    
+    class BGArenaPlanner{
+        -DEFAULT_COLLECTION: String
+        -BGArenaPlanner()
+        +main(String[] args): void
+    }
 
+    class BoardGame{
+        -name: String
+        -id: int
+        -minPlayers: int
+        -maxPlayers: int
+        -maxPlayTime: int
+        -minPlayTime: int
+        -difficulty: duoble
+        -rank: int
+        -averageRating: double
+        -yearPublished: int
+        +BoardGame(name, id, minPlayers, maxPlayers, minPlayTime, maxPlayTime, difficulty, rank, averageRating, yearPublished)
+        +getName() String
+        +getId() int
+        +getMinPlayers() int
+        +getMaxPlayers() int
+        +getMaxPlayTime() int
+        +getMinPlayTime() int
+        +getDifficulty() double
+        +getRank() int
+        +getRating() double
+        +getYearPublished() int
+        +toStringWithInfo(GameData col) String
+        +toString() String
+        +equals(Object obj) boolean
+        +hashCode() int
+    }
+    
+    class ConsoleApp{
+        -IN: Scanner
+        -DEFAULT_FILENAME: String
+        -RND: Random
+        -current: Scanner
+        -gameList: IGameList
+        -planner: IPlanner
+        +ConsoleApp(gameList: IGameList, planner: IPlanner)
+        +start() void
+        -randomNumber() void
+        -processHelp() void
+        -processFilter() void
+        -printFilterStream(games: Stream~BoardGame~ , sortON: GameData) void
+        -processListCommands() void
+        -printCurrentList() void
+        -nextCommand() ConsoleText
+        -remainder() String
+    }
+    
+    class GameData{
+        <<enumeration>>
+        NAME
+        ID
+        RATING
+        DIFFICULTY
+        RANK
+        MIN_PLAYERS
+        MAX_PLAYERS
+        MIN_TIME
+        MAX_TIME
+        YEAR
+        -columnName String
+        +getColumnName() String
+        +fromColumnName(columnName: String) GameData
+        +fromString(name: String) GameData
+    }
+    
+    class GameList{
+        +GameList()
+        +getGameNames() List~String~
+        +clear() void
+        +count() int
+        +saveGame(filename: String) void
+        +addToList(str: String, filtered: Stream~BoardGame~) void
+        +removeFromList(str: String) void
+    }
+    
+    
+    
+    class GameLoader{
+        -DELIMITER String
+        -GamesLoader()
+        +loadGamesFile(filename: String) Set~BoardGame~
+        -toBoardGame(line: String, columnMap: Map) BoardGame
+        -processHeader(header: String) Map
+    }
+    
+    class Operations{
+        <<enumeration>>
+        EQUALS
+        NOT_EQUALS
+        GREATER_THAN
+        LESS_THAN
+        GREATER_THAN_EQUALS
+        LESS_THAN_EQUALS
+        CONTAINS
+        -operator String
+        +getOperator() String
+        +fromOperator(operator: String) Operations
+        +getOperatorFromStr(str: String) Operations
+    }
+    
+    class Filter{
+        +filter(game: BoardGame, column: GameData, op: Operations, value: String) boolean
+        +filer(gameData: String, op: Operations, value: String) boolean
+        +filter(gameData: double, op: Operations, value: String) boolean
+    }
+    
+    class Planner{
+        +Planner(games: Set~BoardGame~)
+        +filter(filter: String) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData) Stream~BoardGame~
+        +filter(filter: String, sortOn: GameData, ascending: boolean) Stream~BoardGame~
+        +reset() void
+        -applyFilter(filter: String, sortOn: GameData, ascending: boolean) Stream~BoardGame~
+    }
+
+```
 
 
 
@@ -392,3 +552,10 @@ For the final design, you just need to do a single diagram that includes both th
 > The value of reflective writing has been highly researched and documented within computer science, from learning to information to showing higher salaries in the workplace. For this next part, we encourage you to take time, and truly focus on your retrospective.
 
 Take time to reflect on how your design has changed. Write in *prose* (i.e. do not bullet point your answers - it matters in how our brain processes the information). Make sure to include what were some major changes, and why you made them. What did you learn from this process? What would you do differently next time? What was the most challenging part of this process? For most students, it will be a paragraph or two. 
+
+I learned that design is a evolving process from this project. While the initial diagram can help us to understand the structure of a system, the details often shows through the continiusly coding and testing. This iterative process helps me to understand how each class interact with others.
+
+When designing object-oriented systems, one of the challenges I often face is deciding when to use an abstract class instead of a concrete class. Abstract classes are useful when multiple related classes share common behavior. However, distinguishing between situations where an abstract class or concrete class can [sometimes be unclear.
+
+Another thing is I learned the importance of maintainence when using filtering and sorting operations. Java streams are powerful but need to be careful handling when dealing with user inputs, as they are easily referenceable structures once used.
+
